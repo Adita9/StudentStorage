@@ -1,18 +1,20 @@
 package studentstorage.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import lombok.Builder;
+
+import javax.persistence.*;
 import java.util.Map;
 
+@Builder
 @Entity
 @Table(name = "exam")
 public class Exam {
 
     @javax.persistence.Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private int id;
     private String year;
-//    @OneToMany(mappedBy = "exam")
+//    @OneToMany
 //    private Map<Map<String, String>, String> mapSchedule;
-
 }
