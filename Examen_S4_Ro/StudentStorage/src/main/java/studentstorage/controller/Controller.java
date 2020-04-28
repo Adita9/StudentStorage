@@ -1,7 +1,12 @@
 package studentstorage.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import studentstorage.entity.*;
 import studentstorage.persistence.StudentRepository;
@@ -11,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-
+@Slf4j
 public class Controller {
 
     private StudentRepository studentRepository;
@@ -22,8 +27,8 @@ public class Controller {
     }
 
     @Transactional
-    @GetMapping(value = "/create")
-    public void createStudent(){
+    @GetMapping(value = "/students")
+    public void createStudent() {
 
         PersonalInfo personalInfo = PersonalInfo.builder()
                 .address("address")
@@ -60,8 +65,8 @@ public class Controller {
         List<Exam> exams = new ArrayList<>();
         exams.add(exam);
 
-       Schedule schedule = Schedule.builder()
-               .year("2131").build();
+        Schedule schedule = Schedule.builder()
+                .year("2131").build();
 
         SchoolInformation schoolInformation = SchoolInformation.builder()
                 .arrer(arrers)
@@ -76,6 +81,21 @@ public class Controller {
                 .build();
 
         studentRepository.save(student);
-
+        log.info("Created the student with the student id {}", student.getId());
     }
+
+    @GetMapping(value = "/students/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<Student> getStudent(@PathVariable(value = "id") final int id) {
+
+        Student student = studentRepository.findById(id).get();
+
+       // log.info("Retrieved the student with the student id {}", student.getId());
+
+        log.info("Retrieved the student with the student id {}", student);
+
+
+        return ResponseEntity.ok(student);
+    }
+
 }

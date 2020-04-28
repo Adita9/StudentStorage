@@ -1,6 +1,6 @@
 package studentstorage.entity;
 
-import lombok.Builder;
+import lombok.*;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
@@ -10,11 +10,15 @@ import java.io.Serializable;
 @Entity
 @Table
 @Builder
-public class Student implements Serializable {
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode
+@ToString
+public class Student {
 
     @javax.persistence.Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     private int id;
     @Cascade(CascadeType.ALL)
     @OneToOne

@@ -1,16 +1,23 @@
 package studentstorage.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
 @Builder
 @Table
 @Entity
-public class SchoolInformation {
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+public class SchoolInformation implements Serializable {
 
     @javax.persistence.Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

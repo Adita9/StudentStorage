@@ -1,6 +1,9 @@
 package studentstorage.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 
 import javax.persistence.Entity;
@@ -12,6 +15,9 @@ import java.util.Date;
 @Table
 @Entity
 @Builder
+@AllArgsConstructor
+@Getter
+@NoArgsConstructor
 public class Mark {
 
     @javax.persistence.Id

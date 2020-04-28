@@ -1,6 +1,6 @@
 package studentstorage.entity;
 
-import lombok.Builder;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 
 import javax.persistence.Entity;
@@ -8,11 +8,16 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Table;
 import java.awt.*;
+import java.io.Serializable;
 
 @Table
 @Entity
 @Builder
-public class PersonalInfo {
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
+public class PersonalInfo implements Serializable{
 
     @javax.persistence.Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
