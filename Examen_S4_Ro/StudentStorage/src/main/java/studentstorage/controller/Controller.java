@@ -4,15 +4,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import studentstorage.entity.*;
+import studentstorage.persistence.DocumentRepository;
 import studentstorage.persistence.StudentRepository;
 
 import javax.transaction.Transactional;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -20,10 +22,12 @@ import java.util.List;
 public class Controller {
 
     private StudentRepository studentRepository;
+    private DocumentRepository documentRepository;
 
     @Autowired
-    public Controller(StudentRepository studentRepository) {
+    public Controller(StudentRepository studentRepository, DocumentRepository documentRepository) {
         this.studentRepository = studentRepository;
+        this.documentRepository = documentRepository;
     }
 
     @Transactional
@@ -75,27 +79,54 @@ public class Controller {
                 .schedule(schedule)
                 .build();
 
-        Student student = Student.builder()
+        StudentEntity studentEntity = StudentEntity.builder()
                 .personalInfo(personalInfo)
                 .schoolInformation(schoolInformation)
                 .build();
 
-        studentRepository.save(student);
-        log.info("Created the student with the student id {}", student.getId());
+        studentRepository.save(studentEntity);
+        log.info("Created the studentEntity with the studentEntity id {}", studentEntity.getId());
     }
 
     @GetMapping(value = "/students/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<Student> getStudent(@PathVariable(value = "id") final int id) {
+    public ResponseEntity<StudentEntity> getStudent(@PathVariable(value = "id") final int id) {
 
-        Student student = studentRepository.findById(id).get();
+        StudentEntity studentEntity = studentRepository.findById(id).get();
 
-       // log.info("Retrieved the student with the student id {}", student.getId());
+        // log.info("Retrieved the studentEntity with the studentEntity id {}", studentEntity.getId());
 
-        log.info("Retrieved the student with the student id {}", student);
+        log.info("Retrieved the studentEntity with the studentEntity id {}", studentEntity);
 
 
-        return ResponseEntity.ok(student);
+        return ResponseEntity.ok(studentEntity);
+    }
+
+    @PostMapping(value = "/students/{id}/documents", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<StudentEntity> postDocument(@PathVariable(value = "id") final int id,
+                                                      @RequestParam("file") String request) throws IOException {
+
+
+//        FileItem fileItem = new DiskFileItem("cerere", "application/pdf", true, "cerere", 100000000, new File(System.getProperty("java.io.tmpdir")));
+
+        byte[] array = request.getBytes();
+//
+        StudentEntity studentEntity = studentRepository.findById(id).get();
+        StudentDocumentEntity studentDocumentEntity = StudentDocumentEntity.builder().name("cerere").
+                fileValue(Arrays.toString(array)).
+                build();
+        List<StudentDocumentEntity> documentsReferences = studentEntity.getDocumentsReferences();
+        documentRepository.setContent(studentDocumentEntity, new ByteArrayInputStream(array));
+
+        InputStream content = documentRepository.getContent(studentDocumentEntity);
+        byte[] buffer = new byte[content.available()];
+
+        documentsReferences.add(studentDocumentEntity);
+        studentRepository.save(studentEntity);
+
+
+        return ResponseEntity.ok(studentEntity);
     }
 
 }
