@@ -2,6 +2,7 @@ package studentstorage.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @Slf4j
@@ -52,15 +54,15 @@ public class Controller {
         arrers.add(arrer1);
         arrers.add(arrer2);
 
-        ColleageYear colleageYear = ColleageYear.builder()
+        CollegeYear collegeYear = CollegeYear.builder()
                 .year("1231")
                 .semester("2")
                 .specialization("CSIE")
                 .state("asd")
                 .learningForm(LearningForm.IF)
                 .build();
-        List<ColleageYear> colleageYears = new ArrayList<>();
-        colleageYears.add(colleageYear);
+        List<CollegeYear> collegeYears = new ArrayList<>();
+        collegeYears.add(collegeYear);
 
         Exam exam = Exam.builder()
                 .year("1231")
@@ -73,8 +75,7 @@ public class Controller {
                 .year("2131").build();
 
         SchoolInformation schoolInformation = SchoolInformation.builder()
-                .arrer(arrers)
-                .collageYear(colleageYears)
+                .collageYear(collegeYears)
                 .exam(exams)
                 .schedule(schedule)
                 .build();
@@ -129,4 +130,23 @@ public class Controller {
         return ResponseEntity.ok(studentEntity);
     }
 
+    @GetMapping(value = "/students/{id}/files")
+    public ResponseEntity<List<StudentDocumentEntity>> getFiles(@PathVariable String id) {
+        Optional<StudentEntity> student = studentRepository.findById(Integer.valueOf(id));
+        List<StudentDocumentEntity> documentsReferences = new ArrayList<>();
+        if (student.isPresent()) {
+            documentsReferences = student.get().getDocumentsReferences();
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(documentsReferences);
+    }
+
+    @PutMapping(value = "/students/{studentId}/files/{fileId}")
+    public ResponseEntity updateFile(@PathVariable String studentId, @PathVariable String fileId) {
+        Optional<StudentEntity> student = studentRepository.findById(Integer.valueOf(studentId));
+        student.get().getDocumentsReferences().get(Integer.parseInt(fileId)).setAccepted(true);
+        studentRepository.save(student.get());
+
+        return ResponseEntity.status(HttpStatus.OK).body("Accepted the file");
+
+    }
 }

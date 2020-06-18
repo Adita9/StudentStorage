@@ -24,7 +24,7 @@ public class SchoolInformation implements Serializable {
     private int id;
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     @OneToMany
-    private List<ColleageYear> collageYear;
+    private List<CollegeYear> collageYear;
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     @OneToOne
     private Schedule schedule;
@@ -43,7 +43,7 @@ public class SchoolInformation implements Serializable {
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     @OneToMany
     @Column
-    private List<Arrer> arrer;
+    private List<Arrer> arrear;
 
 
 }
