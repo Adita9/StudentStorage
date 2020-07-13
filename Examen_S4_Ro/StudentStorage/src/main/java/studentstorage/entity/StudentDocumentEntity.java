@@ -5,11 +5,8 @@ import lombok.*;
 import org.springframework.content.commons.annotations.ContentId;
 import org.springframework.content.commons.annotations.ContentLength;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -28,11 +25,12 @@ public class StudentDocumentEntity implements Serializable {
     private Date created = new Date();
     private String summary;
     private boolean accepted;
+    private String download;
     private String professorEmail;
 
     @Lob
-    @Column(name = "fileValue", columnDefinition="CLOB")
-    private String fileValue;
+    @Column(name = "fileValue", columnDefinition = "BINARY")
+    private byte[] fileValue;
 
     @ContentId
     private String contentId;

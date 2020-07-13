@@ -21,6 +21,7 @@ public class StudentEntity implements Serializable {
     @javax.persistence.Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    private boolean status;
     @Cascade(CascadeType.ALL)
     @OneToOne
     private PersonalInfo personalInfo;
